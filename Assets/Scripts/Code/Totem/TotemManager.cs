@@ -33,7 +33,7 @@ public class TotemManager : MonoBehaviour
     /// <summary>
     /// Return closest reachable Totem, if null there are no Totem nearby
     /// </summary>
-    /// <param name="position">Position where to check the closest totem</param>
+    /// <param name="position">Position where to check the distance from totem</param>
     /// <returns></returns>
     public Totem GetReachableToken(Vector3 position)
     {

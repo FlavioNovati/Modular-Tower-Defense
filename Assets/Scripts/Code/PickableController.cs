@@ -35,7 +35,7 @@ public class PickableController : MonoBehaviour
         //Update Raycast
         m_Ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         //Raycast
-        return Physics.Raycast(m_Ray, out m_RaycastHit, m_RaycastDinstance);
+        return Physics.Raycast(m_Ray, out m_RaycastHit, m_RaycastDinstance, ~(1<<6));
     }
 
     private void UpdatePickablePosition()

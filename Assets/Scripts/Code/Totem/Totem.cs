@@ -4,16 +4,13 @@ using UnityEngine;
 
 public class Totem : MonoBehaviour, IPlaceableSpot
 {
-
-
     public float ZOffset { get; set; }
     [SerializeField] private float m_ZOffset;
     public float PlaceableRadious { get; set; }
     [SerializeField] private float m_PlaceableRadious;
-
-
-    [SerializeField] private List<TotemSegment> Segments;
-    float m_Height = 0f;
+    
+    private List<TotemSegment> Segments = new List<TotemSegment>();
+    private float m_Height = 0f;
 
     private void Awake()
     {
@@ -27,7 +24,7 @@ public class Totem : MonoBehaviour, IPlaceableSpot
     public void Tick()
     {
         //Tick all segment
-        for(int i = 0; i < Segments.Count; i++)
+        for (int i = 0; i < Segments.Count; i++)
             Segments[i].Tick();
     }
 

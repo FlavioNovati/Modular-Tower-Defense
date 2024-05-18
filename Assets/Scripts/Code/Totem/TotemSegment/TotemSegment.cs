@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class TotemSegment : MonoBehaviour, IPlaceableSpot
 {
-    public Action OnPickUp;
-
     public float ZOffset { get; set; }
     public float PlaceableRadious { get; set; }
 
@@ -33,9 +31,9 @@ public class TotemSegment : MonoBehaviour, IPlaceableSpot
 
     }
 
-    public void PickUp()
+    public void ApplyEffect()
     {
-        OnPickUp?.Invoke();
+        //TODO: Apply Effect
     }
 
 #if UNITY_EDITOR

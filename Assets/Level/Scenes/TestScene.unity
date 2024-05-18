@@ -254,8 +254,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 80379203}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.2195799, y: 0.6961843, z: -0.23870274, w: -0.6404164}
+  m_LocalPosition: {x: 14.569583, y: 11.390745, z: 8.427818}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -275,7 +275,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PickableOffset: {x: 0, y: 1, z: 0}
   m_RaycastDinstance: 100
-  CheckRadious: 3
+  CheckRadious: 0.5
 --- !u!1001 &181188505
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -751,8 +751,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1258672336}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.16351798, y: 0.69833213, z: -0.16890447, w: -0.6760662}
-  m_LocalPosition: {x: 13.349982, y: 8.337977, z: 7.222786}
+  m_LocalRotation: {x: -0.186151, y: 0.72223395, z: -0.21301924, w: -0.63114876}
+  m_LocalPosition: {x: 14.067363, y: 8.509111, z: 10.659529}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
