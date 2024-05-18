@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ZOffset: 0.2
-  m_PlaceableRadious: 0.57
+  m_PlaceableRadious: 4
 --- !u!1 &2741115737624607600
 GameObject:
   m_ObjectHideFlags: 0

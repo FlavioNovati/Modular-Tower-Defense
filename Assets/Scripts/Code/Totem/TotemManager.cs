@@ -4,10 +4,22 @@ using UnityEngine;
 
 public class TotemManager : MonoBehaviour
 {
+    public static TotemManager Instance;
+
     private List<Totem> m_TotemList;
 
     private void Awake()
     {
+        //Set up Instance
+        if (Instance == null)
+            Instance = this;
+        else
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        //Setup Totem List
+        m_TotemList = new List<Totem>();
         m_TotemList = FindObjectsOfType<Totem>().ToList();
     }
 
@@ -25,8 +37,8 @@ public class TotemManager : MonoBehaviour
     /// <returns></returns>
     public Totem GetReachableToken(Vector3 position)
     {
-        for (int i = 0; i < m_TotemList.Count - 1; i++)
-            if ((position - m_TotemList[i].transform.position).magnitude < m_TotemList[i].PlaceableRadious)
+        for (int i = 0; i < m_TotemList.Count; i++)
+            if (Vector3.Distance(position, m_TotemList[i].transform.position) <= m_TotemList[i].PlaceableRadious)
                 return m_TotemList[i];
         return null;
     }
