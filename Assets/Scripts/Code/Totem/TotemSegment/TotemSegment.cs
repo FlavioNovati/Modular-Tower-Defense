@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-public class TotemSegment : MonoBehaviour, IPlaceableSpot
+public abstract class TotemSegment : MonoBehaviour, IPlaceableSpot
 {
     public float ZOffset { get; set; }
     public float PlaceableRadious { get; set; }
@@ -16,24 +16,19 @@ public class TotemSegment : MonoBehaviour, IPlaceableSpot
         PlaceableRadious = m_PlaceableRadious;
     }
 
-    public void Activate()
+    public virtual void Activate()
     {
 
     }
 
-    public void Deactivate()
+    public virtual void Deactivate()
     {
 
     }
 
-    public void Tick()
+    public virtual void Tick()
     {
 
-    }
-
-    public void ApplyEffect()
-    {
-        //TODO: Apply Effect
     }
 
 #if UNITY_EDITOR

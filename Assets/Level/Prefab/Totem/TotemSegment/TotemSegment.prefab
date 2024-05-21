@@ -92,7 +92,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2091483565474641989}
-  - component: {fileID: 4738939392449298275}
   - component: {fileID: 5958064986795321193}
   m_Layer: 6
   m_Name: TotemSegment
@@ -117,20 +116,6 @@ Transform:
   - {fileID: 6786466863370120340}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4738939392449298275
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2019672758238613898}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d4782c5db4a4604caa080c172274759, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_ZOffset: 0
-  m_PlaceableRadious: 0.5
 --- !u!65 &5958064986795321193
 BoxCollider:
   m_ObjectHideFlags: 0

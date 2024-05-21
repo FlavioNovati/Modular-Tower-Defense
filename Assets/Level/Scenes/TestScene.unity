@@ -466,6 +466,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5651504135481589842, guid: 5b5a984c32b9f7a4284b032827ed3dd8, type: 3}
+      propertyPath: m_Settings
+      value: 
+      objectReference: {fileID: 11400000, guid: 1c67b0f997fd2eb47b5762a4e3890c21, type: 2}
     - target: {fileID: 7098398158151776792, guid: 5b5a984c32b9f7a4284b032827ed3dd8, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.7061348
@@ -812,7 +816,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1751600773821222387, guid: 51cecb6eb4718db44bd6aefe437179e6, type: 3}
       propertyPath: m_Name
-      value: TotemPrefab (2)
+      value: TotemPrefab
       objectReference: {fileID: 0}
     - target: {fileID: 5958639402788485727, guid: 51cecb6eb4718db44bd6aefe437179e6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -936,7 +940,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1751600773821222387, guid: 51cecb6eb4718db44bd6aefe437179e6, type: 3}
       propertyPath: m_Name
-      value: TotemPrefab (1)
+      value: 'TotemPrefab '
       objectReference: {fileID: 0}
     - target: {fileID: 5958639402788485727, guid: 51cecb6eb4718db44bd6aefe437179e6, type: 3}
       propertyPath: m_LocalPosition.x

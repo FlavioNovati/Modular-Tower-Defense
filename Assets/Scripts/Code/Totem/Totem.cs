@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -10,6 +11,8 @@ public class Totem : MonoBehaviour, IPlaceableSpot
     [SerializeField] private float m_PlaceableRadious;
     
     private List<TotemSegment> Segments = new List<TotemSegment>();
+    private List<Buff> Buffs = new List<Buff>();
+
     private float m_Height = 0f;
 
     private void Awake()
@@ -29,18 +32,77 @@ public class Totem : MonoBehaviour, IPlaceableSpot
     }
 
     /// <summary>
-    /// Adds a Totem Segment on top
+    /// Add a segment to tomem
+    /// - Add
+    /// - Move
+    /// - Enable
+    /// - Try get Buff
+    /// - Apply Buff
     /// </summary>
-    /// <param name="NewSegment">Segment to add to the tome</param>
-    public void AddSegment(TotemSegment NewSegment)
+    /// <param name="newSegment">Segment to add to the tomem</param>
+    public void AddSegment(TotemSegment newSegment)
     {
-        //Add Segment
-        Segments.Add(NewSegment);
+        //Add Segment to segment list
+        Segments.Add(newSegment);
+
         //Move Segment
         Segments.Last().transform.position = new Vector3(transform.position.x, m_Height, transform.position.z);
         m_Height += Segments.Last().ZOffset;
+
         //Activate Segment
         Segments.Last().Activate();
+
+        //Try Get buff
+        Buff buff = TryGetBuff(Segments.Last());
+        if (buff != null) //new buff -> apply to all turret
+        {
+            Buffs.Add(buff);
+            for(int turretIndex = 0; turretIndex < Segments.Count; turretIndex++)
+                TryApplyBuff(buff, Segments[turretIndex]);
+        }
+        else //not a buff, is a turret -> apply old buffs to new turret
+        {
+            for (int buffIndex = 0; buffIndex < Buffs.Count; buffIndex++)
+                TryApplyBuff(Buffs[buffIndex], Segments.Last());
+        }
+    }
+
+    /// <summary>
+    /// Try to apply a buff to a totem segment
+    /// </summary>
+    /// <param name="buff">Buff to apply</param>
+    /// <param name="segment">Segment to apply buff</param>
+    private void TryApplyBuff(Buff buff, TotemSegment segment)
+    {
+        segment.TryGetComponent<TurretSegment>(out TurretSegment turret);
+        if(turret != null)
+            turret.AddBuff(buff);
+    }
+
+    /// <summary>
+    /// Try to apply a buff to a totem segment
+    /// </summary>
+    /// <param name="buff">Buff to apply</param>
+    /// <param name="segment">Segment to apply buff</param>
+    private void TryRemoveBuff(Buff buff, TotemSegment segment)
+    {
+        segment.TryGetComponent<TurretSegment>(out TurretSegment turret);
+        if (turret != null)
+            turret.RemoveBuff(buff);
+    }
+
+    /// <summary>
+    /// Returns a segment buff, if is null there is no buff
+    /// </summary>
+    /// <param name="segment">Segment to get the buff from</param>
+    /// <returns></returns>
+    private Buff TryGetBuff(TotemSegment segment)
+    {
+        segment.TryGetComponent<BuffSegment>(out BuffSegment buff);
+        if(buff != null)
+            return buff.GetBuff();
+        else
+            return null;
     }
 
     /// <summary>
@@ -53,10 +115,21 @@ public class Totem : MonoBehaviour, IPlaceableSpot
             return null;
         //Decrease height
         m_Height -= Segments.Last().ZOffset;
-        //get last segment
-        TotemSegment segment = Segments.Last();
-        //remove it
+        
+        //Remove effect if the last one is a buff segment
+        Buff buff = TryGetBuff(Segments.Last());
+        if(buff != null)
+        {
+            for(int i =  0; i < Segments.Count; i++)
+                TryRemoveBuff(buff, Segments[i]);
+            //Remove last buff from Buffs list
+            Buffs.RemoveLast();
+        }
+
+        //Deactivate segment
         Segments.Last().Deactivate();
+        //Remove last segment
+        TotemSegment segment = Segments.Last();
         Segments.RemoveLast();
         return segment;
     }
