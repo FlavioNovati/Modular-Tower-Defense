@@ -6,7 +6,7 @@ public class Totem : MonoBehaviour, IPlaceableSpot
 {
     public float ZOffset { get; set; }
     [SerializeField] private float m_ZOffset;
-    public float PlaceableRadious { get; set; }
+    public float PlaceableRadius { get; set; }
     [SerializeField] private float m_PlaceableRadious;
     
     private List<TotemSegment> Segments = new List<TotemSegment>();
@@ -17,7 +17,7 @@ public class Totem : MonoBehaviour, IPlaceableSpot
     private void Awake()
     {
         m_Height = m_ZOffset;
-        PlaceableRadious = m_PlaceableRadious;
+        PlaceableRadius = m_PlaceableRadious;
     }
 
     /// <summary>
@@ -145,6 +145,22 @@ public class Totem : MonoBehaviour, IPlaceableSpot
         TotemSegment segment = Segments.Last();
         Segments.RemoveLast();
         return segment;
+    }
+
+    /// <summary>
+    /// return true if constraints are respected
+    /// </summary>
+    /// <param name="segment"></param>
+    /// <returns></returns>
+    public bool CanPlace(TotemSegment segment)
+    {
+        //Don't allow buff if there are no turrets
+        if(TryGetBuff(segment) == null)
+            return true;
+        else
+            return Segments.Count > 0;
+
+        //Max totem segment can be constrained here
     }
 
 #if UNITY_EDITOR

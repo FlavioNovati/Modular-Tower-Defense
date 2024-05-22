@@ -275,7 +275,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PickableOffset: {x: 0, y: 1, z: 0}
   m_RaycastDinstance: 100
-  CheckRadious: 0.5
+  CheckRadius: 2
 --- !u!1001 &181188505
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -614,7 +614,7 @@ Transform:
   m_GameObject: {fileID: 777600809}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.55, y: 0, z: 13.96}
+  m_LocalPosition: {x: 2.39, y: 0, z: 16.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

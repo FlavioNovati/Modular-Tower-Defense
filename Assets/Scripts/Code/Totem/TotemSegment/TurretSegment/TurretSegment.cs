@@ -38,9 +38,6 @@ public class TurretSegment : TotemSegment, IBuffable
         //Set up animation values
         m_StartingRotation = transform.eulerAngles.y;
         m_StartingRotationTime = Time.time;
-        //Reset Barrel Rotation
-        m_BarrelTransform.eulerAngles = Vector3.zero;
-        Debug.Log(m_BarrelTransform.eulerAngles);
     }
 
     public override void Tick()
@@ -77,7 +74,12 @@ public class TurretSegment : TotemSegment, IBuffable
     {
         Collider[] Enemy = Physics.OverlapSphere(new Vector3(transform.position.x, 0f, transform.position.z), m_AttackRadiuos, (1<<7));
         if (Enemy.Length > 0)
-            return Enemy[0].transform;
+        {
+            if(InReach(Enemy[0].transform.position))
+                return Enemy[0].transform;
+            else 
+                return null;
+        }
         else
             return null;
     }
@@ -95,17 +97,21 @@ public class TurretSegment : TotemSegment, IBuffable
     private void AttackTick()
     {
         //Rotate towards target
-        //Shoot
-
         AnimateAttack();
-
-        if (!InReach())
+        
+        if (!InReach(m_Target.position))//Lose target
+        {
+            m_StartingRotation = transform.eulerAngles.y;
             m_Target = null;
+        }
+        else //Shoot target
+        {
+            //TODO: Shoot
+        }
     }
 
-    private bool InReach()
+    private bool InReach(Vector3 targetPos)
     {
-        Vector3 targetPos = m_Target.position;
         targetPos.y = 0f;
         Vector3 currentPos = transform.position;
         currentPos.y = 0f;

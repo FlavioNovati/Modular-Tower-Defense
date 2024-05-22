@@ -38,7 +38,7 @@ public class TotemManager : MonoBehaviour
     public Totem GetReachableToken(Vector3 position)
     {
         for (int i = 0; i < m_TotemList.Count; i++)
-            if (Vector3.Distance(position, m_TotemList[i].transform.position) <= m_TotemList[i].PlaceableRadious)
+            if (Vector3.Distance(position, m_TotemList[i].transform.position) <= m_TotemList[i].PlaceableRadius)
                 return m_TotemList[i];
         return null;
     }

@@ -5,26 +5,28 @@ using UnityEngine;
 public abstract class TotemSegment : MonoBehaviour, IPlaceableSpot
 {
     public float ZOffset { get; set; }
-    public float PlaceableRadious { get; set; }
+    public float PlaceableRadius { get; set; }
 
     [Header("Totem Segment Settings")]
     [SerializeField] private float m_ZOffset;
     [SerializeField] private float m_PlaceableRadious;
+    [SerializeField] private Collider m_Collider;
 
     private void Awake()
     {
         ZOffset = m_ZOffset;
-        PlaceableRadious = m_PlaceableRadious;
+        PlaceableRadius = m_PlaceableRadious;
+        m_Collider = GetComponent<Collider>();
     }
 
     public virtual void Activate()
     {
-
+        m_Collider.enabled = false;
     }
 
     public virtual void Deactivate()
     {
-
+        m_Collider.enabled = true;
     }
 
     public virtual void Tick()

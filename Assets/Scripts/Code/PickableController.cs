@@ -1,15 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class PickableController : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private Vector3 m_PickableOffset = Vector3.up;
     [SerializeField] private float m_RaycastDinstance = 100f;
-    [SerializeField] private float CheckRadious = 3f;
+    [SerializeField] private float CheckRadius = 3f;
     
     private TotemSegment m_PickedSegment = null;
 
@@ -25,9 +21,13 @@ public class PickableController : MonoBehaviour
         if (m_PickedSegment != null)
             UpdatePickablePosition();
         
-        //Use Raycast hit data
+        //Use Raycast hit data to interact
         if (Input.GetMouseButtonDown(0))
             Interact();
+
+        //Use Raycast hit data to relase object
+        if (Input.GetMouseButtonDown(1))
+            RelasePickedObject();
     }
 
     private bool UpdateRaycastData()
@@ -35,7 +35,7 @@ public class PickableController : MonoBehaviour
         //Update Raycast
         m_Ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         //Raycast
-        return Physics.Raycast(m_Ray, out m_RaycastHit, m_RaycastDinstance, ~(1<<6));
+        return Physics.Raycast(m_Ray, out m_RaycastHit, m_RaycastDinstance, ~(1<<6 | 1<<7));
     }
 
     private void UpdatePickablePosition()
@@ -48,28 +48,26 @@ public class PickableController : MonoBehaviour
     {
         Totem totem = TotemManager.Instance.GetReachableToken(m_RaycastHit.point);
 
-        if(totem)//totem interaction
+        if(totem)//Totem interaction
         {
-            //add item to totem
-            if(m_PickedSegment)
+            if(m_PickedSegment) //Add item to totem if allowed
             {
-                totem.AddSegment(m_PickedSegment);
-                //Free picked Object
-                m_PickedSegment = null;
+                if(totem.CanPlace(m_PickedSegment))
+                {
+                    totem.AddSegment(m_PickedSegment);
+                    //Free picked Object
+                    m_PickedSegment = null;
+                }
             }
-            //Get item from totem
-            else
+            else //Get item from totem
                 m_PickedSegment = totem.GetLastSegment();
-
             return;
         }
         else //Try pick on item
         {
-            // out of totem range
-            if (m_PickedSegment) 
+            if (m_PickedSegment) // Out of totem range
                 return;
-            // try get piece from ground
-            else
+            else // Try get piece from ground
                 TryGetSegment();
         }
     }
@@ -80,7 +78,7 @@ public class PickableController : MonoBehaviour
         if (m_PickedSegment == null)
         {
             //Get overlapping object
-            Collider[] collidingObject = Physics.OverlapSphere(m_RaycastHit.point, CheckRadious);
+            Collider[] collidingObject = Physics.OverlapSphere(m_RaycastHit.point, CheckRadius);
             //Get first TotemSegment
             for (int i = 0; i < collidingObject.Length; i++)
                 if (collidingObject[i].TryGetComponent<TotemSegment>(out TotemSegment segment))
@@ -91,6 +89,24 @@ public class PickableController : MonoBehaviour
         }
     }
 
+    private void RelasePickedObject()
+    {
+        if (m_PickedSegment == null)
+            return;
+
+        //Too close to totem -> Cannot place
+        Totem totem = TotemManager.Instance.GetReachableToken(m_RaycastHit.point);
+        if (totem != null)
+            return;
+
+        //Place it
+        if (m_RaycastHit.point != null)
+        {
+            m_PickedSegment.transform.position = m_RaycastHit.point;
+            m_PickedSegment = null;
+        }
+    }
+
 #if UNITY_EDITOR
     private void OnDrawGizmos()
     {
@@ -98,7 +114,7 @@ public class PickableController : MonoBehaviour
         {
             //Draw Collision point
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(m_RaycastHit.point, CheckRadious);
+            Gizmos.DrawWireSphere(m_RaycastHit.point, CheckRadius);
             Gizmos.color = Color.yellow;
             Gizmos.DrawSphere(m_RaycastHit.point, 0.5f);
             //Draw Turret position
