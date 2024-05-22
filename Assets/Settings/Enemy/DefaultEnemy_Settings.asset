@@ -9,12 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba652bffe2e1e09449efb8219019ca27, type: 3}
-  m_Name: Test Turret
+  m_Script: {fileID: 11500000, guid: beabecd1ec59b2a41b95bb33db2c6701, type: 3}
+  m_Name: DefaultEnemy_Settings
   m_EditorClassIdentifier: 
-  AttackRadiuos: 9
-  AttackDelay: 1
-  BaseDamage: 1
-  BaseBullet: {fileID: 7036523862858314867, guid: ec8667209d6f3a9439351ec9036fac24, type: 3}
-  RotationBaseSpeed: 1
-  RotationMaxAngles: 25
+  Speed: 3
+  HP: 1
+  Damage: 1

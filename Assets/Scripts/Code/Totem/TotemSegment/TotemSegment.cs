@@ -10,7 +10,7 @@ public abstract class TotemSegment : MonoBehaviour, IPlaceableSpot
     [Header("Totem Segment Settings")]
     [SerializeField] private float m_ZOffset;
     [SerializeField] private float m_PlaceableRadious;
-    [SerializeField] private Collider m_Collider;
+    private Collider m_Collider;
 
     private void Awake()
     {
