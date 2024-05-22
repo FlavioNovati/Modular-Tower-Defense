@@ -7,6 +7,7 @@ public abstract class TotemSegment : MonoBehaviour, IPlaceableSpot
     public float ZOffset { get; set; }
     public float PlaceableRadious { get; set; }
 
+    [Header("Totem Segment Settings")]
     [SerializeField] private float m_ZOffset;
     [SerializeField] private float m_PlaceableRadious;
 

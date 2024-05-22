@@ -238,8 +238,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ZOffset: 0.5
   m_PlaceableRadious: 0.5
-  m_MuzzleTransform: {fileID: 4551382011949533757}
   m_Settings: {fileID: 11400000, guid: 1c67b0f997fd2eb47b5762a4e3890c21, type: 2}
+  m_BarrelTransform: {fileID: 4551382011949533757}
+  buffs: []
 --- !u!4 &1530531279975736158 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2091483565474641989, guid: 32aa81b5d4d31aa48a8e15b79791b099, type: 3}

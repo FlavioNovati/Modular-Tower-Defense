@@ -16,3 +16,5 @@ MonoBehaviour:
   AttackDelay: 1
   BaseDamage: 1
   BaseBullet: {fileID: 7036523862858314867, guid: ec8667209d6f3a9439351ec9036fac24, type: 3}
+  RotationSpeed: 1
+  RotationMaxAngles: 25

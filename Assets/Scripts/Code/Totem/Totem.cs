@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -32,14 +31,14 @@ public class Totem : MonoBehaviour, IPlaceableSpot
     }
 
     /// <summary>
-    /// Add a segment to tomem
+    /// Add a segment to totem
     /// - Add
     /// - Move
     /// - Enable
     /// - Try get Buff
     /// - Apply Buff
     /// </summary>
-    /// <param name="newSegment">Segment to add to the tomem</param>
+    /// <param name="newSegment">Segment to add to the totem</param>
     public void AddSegment(TotemSegment newSegment)
     {
         //Add Segment to segment list
@@ -74,23 +73,35 @@ public class Totem : MonoBehaviour, IPlaceableSpot
     /// <param name="segment">Segment to apply buff</param>
     private void TryApplyBuff(Buff buff, TotemSegment segment)
     {
-        segment.TryGetComponent<TurretSegment>(out TurretSegment turret);
-        if(turret != null)
-            turret.AddBuff(buff);
+        segment.TryGetComponent<IBuffable>(out IBuffable buffable);
+        if(buffable != null)
+            buffable.AddBuff(buff);
     }
 
     /// <summary>
-    /// Try to apply a buff to a totem segment
+    ///Remove all buffs from a Segment
+    /// </summary>
+    /// <param name="segment"></param>
+    private void ClearBuffs(TotemSegment segment)
+    {
+        segment.TryGetComponent<IBuffable>(out IBuffable buffable);
+        if (buffable != null)
+            for (int i = 0; i < Buffs.Count; i++)
+                buffable.RemoveBuff(Buffs[i]);
+    }
+
+    /// <summary>
+    /// Try to remove a buff to a totem segment
     /// </summary>
     /// <param name="buff">Buff to apply</param>
     /// <param name="segment">Segment to apply buff</param>
     private void TryRemoveBuff(Buff buff, TotemSegment segment)
     {
-        segment.TryGetComponent<TurretSegment>(out TurretSegment turret);
-        if (turret != null)
-            turret.RemoveBuff(buff);
+        segment.TryGetComponent<IBuffable>(out IBuffable buffable);
+        if (buffable != null)
+            buffable.RemoveBuff(buff);
     }
-
+    
     /// <summary>
     /// Returns a segment buff, if is null there is no buff
     /// </summary>
@@ -125,6 +136,8 @@ public class Totem : MonoBehaviour, IPlaceableSpot
             //Remove last buff from Buffs list
             Buffs.RemoveLast();
         }
+        else
+        ClearBuffs(Segments.Last());
 
         //Deactivate segment
         Segments.Last().Deactivate();
