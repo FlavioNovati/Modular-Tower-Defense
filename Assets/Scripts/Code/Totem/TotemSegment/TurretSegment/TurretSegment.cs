@@ -2,20 +2,21 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class TurretSegment : TotemSegment, IBuffable
 {
     //Turret Variables
     [Header("Turret Variables")]
     [SerializeField] private TurretSegment_Data m_Settings;
-    private Transform m_Target = null;
+    private Enemy m_Target = null;
+    private float m_TurretShootDelay = 0f;
     [Space]
 
     //Turrets Stats
     protected float m_AttackRadiuos;
     protected float m_AttackDelay;
     protected float m_BaseDamage;
-    protected Projectile m_BaseBullet;
 
     //Animation
     [Header("Animation")]
@@ -34,7 +35,6 @@ public class TurretSegment : TotemSegment, IBuffable
         m_AttackRadiuos = m_Settings.AttackRadiuos;
         m_AttackDelay = m_Settings.AttackDelay;
         m_BaseDamage = m_Settings.BaseDamage;
-        m_BaseBullet = m_Settings.BaseBullet;
         //Set up animation values
         m_StartingRotation = transform.eulerAngles.y;
         m_StartingRotationTime = Time.time;
@@ -70,13 +70,14 @@ public class TurretSegment : TotemSegment, IBuffable
     /// return an object transform within overlappin distance with layermask 7, if null no target is found
     /// </summary>
     /// <returns></returns>
-    private Transform TryGetTarget()
+    private Enemy TryGetTarget()
     {
         Collider[] Enemy = Physics.OverlapSphere(new Vector3(transform.position.x, 0f, transform.position.z), m_AttackRadiuos, (1<<7));
         if (Enemy.Length > 0)
         {
-            if(InReach(Enemy[0].transform.position))
-                return Enemy[0].transform;
+            int randomEnemy = UnityEngine.Random.Range(0, Enemy.Length);
+            if(InReach(Enemy[randomEnemy].transform.position))
+                return Enemy[randomEnemy].GetComponent<Enemy>();
             else 
                 return null;
         }
@@ -96,18 +97,29 @@ public class TurretSegment : TotemSegment, IBuffable
     #region Attack Region
     private void AttackTick()
     {
-        //Rotate towards target
-        AnimateAttack();
-        
-        if (!InReach(m_Target.position))//Lose target
+        //Lose Target if gameobject is disables (Dead)
+        if (!m_Target.gameObject.activeInHierarchy)
+        {
+            m_Target = null;
+            return;
+        }
+
+        if (!InReach(m_Target.transform.position))//Lose target
         {
             m_StartingRotation = transform.eulerAngles.y;
             m_Target = null;
         }
         else //Shoot target
         {
-            //TODO: Shoot
+            if (Time.time > m_TurretShootDelay + m_AttackDelay)
+            {
+                m_TurretShootDelay = Time.time;
+                ProjectileManager.Instance.RequestBullet(transform.position, m_Target, m_BaseDamage);
+            }
         }
+
+        //Rotate towards target
+        AnimateAttack();
     }
 
     private bool InReach(Vector3 targetPos)
@@ -121,15 +133,18 @@ public class TurretSegment : TotemSegment, IBuffable
 
     private void AnimateAttack()
     {
+        if (m_Target == null)
+            return;
+
         //Body Rotation
-        Vector3 targetPos = m_Target.position;
+        Vector3 targetPos = m_Target.transform.position;
         targetPos.y = 0f;
         Vector3 currentPos = transform.position;
         currentPos.y = 0f;
         //Apply Body Rotation
         transform.rotation = Quaternion.LookRotation(targetPos - currentPos);
         //Barrel Rotation
-        m_BarrelTransform.rotation = Quaternion.LookRotation((m_Target.position - transform.position));
+        m_BarrelTransform.rotation = Quaternion.LookRotation((m_Target.transform.position - transform.position));
     }
 
     #endregion

@@ -15,16 +15,15 @@ public class HordeController : MonoBehaviour
     [SerializeField] private float m_SpawnHordeRadius = 5f;
     [SerializeField] private float m_DelayBetweenHordes = 5f;
     
-    private List<Enemy> m_EnemyList = new List<Enemy> ();
+    private List<Enemy> m_EnemyList = new List<Enemy>();
     private Horde m_Horde;
 
-    private float m_HordeSize = 0f;
+    private int m_HordeSize = 0;
 
     private void Awake()
     {
-        m_Horde = new Horde();
-        m_Horde.OnHordeDefeated += StartNewHorde;
         m_HordeSize = m_StartingHordeSize;
+        m_Horde = new Horde();
     }
 
     private void Start()
@@ -33,24 +32,18 @@ public class HordeController : MonoBehaviour
         for(int i = 0; i < m_StartingPoolSize; i++)
         {
             m_EnemyList.Add(Instantiate<Enemy>(m_EnemyToSpawn, m_HordeSpawnTransform.position, m_HordeSpawnTransform.rotation));
-            m_EnemyList.Last().gameObject.SetActive(false);
+            m_EnemyList[i].gameObject.SetActive(false);
         }
-        //Set up first Horde
-        for (int i = 0; i < m_StartingHordeSize; i++)
-            m_Horde.AddEnemy(GetFreeEnemy());
 
         //Start first horde
         StartCoroutine(NewHordeCoroutine());
     }
 
+    //TODO: Fix an error when reloading scene all enemies are disabled and destroyed    
     private void StartNewHorde()
     {
-        m_HordeSize += m_HordeIncrement;
-        m_Horde = new Horde();
         //Increment Horde Size
-        for (int i = 0; i < m_HordeSize; i++)
-            m_Horde.AddEnemy(GetFreeEnemy());
-        //Start coroutine
+        m_HordeSize += m_HordeIncrement;
         StartCoroutine(NewHordeCoroutine());
     }
 
@@ -62,31 +55,49 @@ public class HordeController : MonoBehaviour
     {
         //Wait untill time enlaps
         yield return new WaitForSeconds(m_DelayBetweenHordes);
+        //Create new Horde
+        m_Horde = new Horde();
+        //Add Enemies
+        m_Horde.AddEnemy(GetFreeEnemies(m_HordeSize));
+        //Connect Horde Defeated event to start a new one
+        m_Horde.OnHordeDefeated += StartNewHorde;
         //Start new Horde
         m_Horde.StartHorde(m_HordeSpawnTransform.position, m_SpawnHordeRadius, m_TargetTransform);
     }
 
-    /// <summary>
-    /// Return free enemy found in list, if no free enemy is found a new enemy is added
-    /// </summary>
-    /// <returns></returns>
-    private Enemy GetFreeEnemy()
+    private List<Enemy> GetFreeEnemies(int amount)
     {
-        //TODO: Fix an error when reloading scene all enemies are disabled and destroyed    
+        List<Enemy> freeEnemies = new List<Enemy>();
 
-        //Find free enemy
-        for(int i = 0; i < m_EnemyList.Count; i++)
-            if (m_EnemyList[i].gameObject.activeInHierarchy)
-                return m_EnemyList[i];
+        //Find "amount" of enemies -> cycle throught the entirety of enemy list
+        for (int i = 0; i < m_EnemyList.Count; i++)
+        {
+            if (!m_EnemyList[i].gameObject.activeInHierarchy)
+            {
+                freeEnemies.Add(m_EnemyList[i]);
+                //Set to true to avoid putting the same enmy multiple time inside the horde
+                m_EnemyList[i].gameObject.SetActive(true);
+                //stop for cycle
+                if(freeEnemies.Count == amount)
+                    return freeEnemies;
+            }
+        }
 
-        m_EnemyList.Add(Instantiate<Enemy>(m_EnemyToSpawn, m_HordeSpawnTransform.position, m_HordeSpawnTransform.rotation));
-        m_EnemyList.Last().gameObject.SetActive(false);
-        return m_EnemyList.Last();
+        //Enemies are missing -> Add new enemies to pool
+        int missingEnemyAmount = amount - freeEnemies.Count;
+        for(int i = 0; i < missingEnemyAmount; i++)
+        {
+            m_EnemyList.Add(Instantiate<Enemy>(m_EnemyToSpawn, m_HordeSpawnTransform.position, m_HordeSpawnTransform.rotation));
+            m_EnemyList[i].gameObject.SetActive(true);
+            freeEnemies.Add(m_EnemyList.Last());
+        }
+
+        return freeEnemies;
     }
 
     private void FixedUpdate()
     {
-        if(m_Horde.IsHordeAlive())
+        if(m_Horde.IsHordeStarted())
             m_Horde.TickHorde();
     }
 

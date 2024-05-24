@@ -1,15 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
-
 public class Horde
 {
     public delegate void HordeDefeated();
     public event HordeDefeated OnHordeDefeated;
 
-    private List<Enemy> m_HordeMembers;
+    public List<Enemy> m_HordeMembers;
     private int m_AliveEnemy;
 
-    private bool m_IsHordeAlive;
+    private bool m_IsStarted;
     
     public Horde()
     {
@@ -17,13 +16,12 @@ public class Horde
     }
 
     /// <summary>
-    /// Add One Enemy to horde list
+    /// Add Enemy list to horde list
     /// </summary>
-    /// <param name="enemy"></param>
-    public void AddEnemy(Enemy enemy)
+    /// <param name="enemies"></param>
+    public void AddEnemy(List<Enemy> enemies)
     {
-        m_HordeMembers.Add(enemy);
-        m_HordeMembers.Last().gameObject.SetActive(false);
+        m_HordeMembers.AddRange(enemies);
     }
 
     /// <summary>
@@ -33,7 +31,7 @@ public class Horde
     /// <param name="spawnRadius"></param>
     public void StartHorde(Vector3 startHordePosition, float spawnRadius, Transform hordeTarget)
     {
-        m_IsHordeAlive = true;
+        m_IsStarted = true;
         Vector2 posV2;
         for(int i = 0;  i < m_HordeMembers.Count; i++)
         {
@@ -41,7 +39,7 @@ public class Horde
             posV2 = UnityEngine.Random.insideUnitCircle * spawnRadius;
             m_HordeMembers[i].transform.position = startHordePosition + new Vector3(posV2.x, 0f, posV2.y);
             //Connect death event
-            m_HordeMembers[i].OnDeath += ReduceEnemyAlive;
+            m_HordeMembers[i].OnDeath += ReduceAliveEnemy;
             //Enable member
             m_HordeMembers[i].gameObject.SetActive(true);
             //Set the target
@@ -66,13 +64,13 @@ public class Horde
     /// <summary>
     /// Once enemy is killed reduce the horde enemy left counter
     /// </summary>
-    private void ReduceEnemyAlive()
+    private void ReduceAliveEnemy()
     {
         m_AliveEnemy--;
         if (m_AliveEnemy <= 0)
         {
             OnHordeDefeated?.Invoke();
-            m_IsHordeAlive = false;
+            m_IsStarted = false;
         }
     }
 
@@ -80,8 +78,8 @@ public class Horde
     /// Return if horde is alive, if false the horde can be defeated or not started
     /// </summary>
     /// <returns></returns>
-    public bool IsHordeAlive()
+    public bool IsHordeStarted()
     {
-        return m_IsHordeAlive;
+        return m_IsStarted;
     }
 }

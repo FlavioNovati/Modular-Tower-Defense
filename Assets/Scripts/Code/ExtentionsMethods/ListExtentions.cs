@@ -4,7 +4,7 @@ public static class ListExtentions
 {
     public static T Last<T>(this List<T> list)
     {
-        return list[^1];
+        return list[list.Count-1];
     }
 
     public static List<T> RemoveLast<T>(this List<T> list)
