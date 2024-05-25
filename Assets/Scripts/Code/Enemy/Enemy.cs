@@ -20,21 +20,36 @@ public class Enemy : MonoBehaviour, IDamageable
         m_Agent.speed = m_Settings.Speed;
     }
 
+    /// <summary>
+    /// Set target position, at the end it will try get IDamageable to damage it
+    /// </summary>
+    /// <param name="target"></param>
     public void SetTarget(Transform target)
     {
         m_TargetTransform = target;
         m_Agent.SetDestination(m_TargetTransform.position);
     }
     
+    /// <summary>
+    /// Update this Enemy
+    /// </summary>
     public void Tick()
     {
         m_Agent.SetDestination(m_TargetTransform.position);
 
         //if distance from target is less than a value -> Damage player Base
         if ((transform.position - m_TargetTransform.position).magnitude < 1f)
+        {
+            if (m_TargetTransform.TryGetComponent<IDamageable>(out IDamageable damageable))
+                damageable.TakeDamage(m_Settings.Damage);
             this.gameObject.SetActive(false);
+        }
     }
 
+    /// <summary>
+    /// Reduce health points, if <= 0 then disable game object
+    /// </summary>
+    /// <param name="damage"></param>
     public void TakeDamage(float damage)
     {
         m_Hp -= damage;

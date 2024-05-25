@@ -14,7 +14,7 @@ public class TurretSegment : TotemSegment, IBuffable
     [Space]
 
     //Turrets Stats
-    protected float m_AttackRadiuos;
+    protected float m_AttackRadius;
     protected float m_AttackDelay;
     protected float m_BaseDamage;
 
@@ -23,16 +23,12 @@ public class TurretSegment : TotemSegment, IBuffable
     [SerializeField] private Transform m_BarrelTransform;
     protected float m_StartingRotation = 0f;
     protected float m_StartingRotationTime = 0f;
-    [Space]
-
-    //TODO: Remove DEBUG FEATURE
-    public List<Buff> buffs = new List<Buff>();
 
     public override void Activate()
     {
         base.Activate();
         //Reset parameters
-        m_AttackRadiuos = m_Settings.AttackRadiuos;
+        m_AttackRadius = m_Settings.AttackRadiuos;
         m_AttackDelay = m_Settings.AttackDelay;
         m_BaseDamage = m_Settings.BaseDamage;
         //Set up animation values
@@ -64,6 +60,10 @@ public class TurretSegment : TotemSegment, IBuffable
     {
         AnimateIdle();
         m_Target = TryGetTarget();
+
+        //Reset cool down
+        if( m_Target != null )
+            m_TurretShootDelay = Time.time;
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ public class TurretSegment : TotemSegment, IBuffable
     /// <returns></returns>
     private Enemy TryGetTarget()
     {
-        Collider[] Enemy = Physics.OverlapSphere(new Vector3(transform.position.x, 0f, transform.position.z), m_AttackRadiuos, (1<<7));
+        Collider[] Enemy = Physics.OverlapSphere(new Vector3(transform.position.x, 0f, transform.position.z), m_AttackRadius, (1<<7));
         if (Enemy.Length > 0)
         {
             int randomEnemy = UnityEngine.Random.Range(0, Enemy.Length);
@@ -97,40 +97,48 @@ public class TurretSegment : TotemSegment, IBuffable
     #region Attack Region
     private void AttackTick()
     {
-        //Lose Target if gameobject is disables (Dead)
+        //Lose Target if gameobject is disabled (Dead)
         if (!m_Target.gameObject.activeInHierarchy)
         {
             m_Target = null;
             return;
         }
-
-        if (!InReach(m_Target.transform.position))//Lose target
+        //Lose target if not in reach
+        if (!InReach(m_Target.transform.position))
         {
             m_StartingRotation = transform.eulerAngles.y;
+            m_StartingRotationTime = Time.time;
             m_Target = null;
-        }
-        else //Shoot target
-        {
-            if (Time.time > m_TurretShootDelay + m_AttackDelay)
-            {
-                m_TurretShootDelay = Time.time;
-                ProjectileManager.Instance.RequestBullet(transform.position, m_Target, m_BaseDamage);
-            }
+            return;
         }
 
+        //Shoot the target
+        if (Time.time > m_TurretShootDelay + m_AttackDelay)
+        {
+            m_TurretShootDelay = Time.time;
+            ProjectileManager.Instance.RequestBullet(transform.position, m_Target, m_BaseDamage);
+        }
         //Rotate towards target
         AnimateAttack();
     }
 
+    /// <summary>
+    /// Overlap sphere can get target even if is further that actual attack range, this function return true if distance between target and turret is less equals than attack radius
+    /// </summary>
+    /// <param name="targetPos"></param>
+    /// <returns></returns>
     private bool InReach(Vector3 targetPos)
     {
         targetPos.y = 0f;
         Vector3 currentPos = transform.position;
         currentPos.y = 0f;
 
-        return Vector3.Distance(currentPos, targetPos) <= m_AttackRadiuos;
+        return Vector3.Distance(currentPos, targetPos) <= m_AttackRadius;
     }
 
+    /// <summary>
+    /// Rotate towards target
+    /// </summary>
     private void AnimateAttack()
     {
         if (m_Target == null)
@@ -156,25 +164,20 @@ public class TurretSegment : TotemSegment, IBuffable
     /// <param name="buff">Buff to add</param>
     public void AddBuff(Buff buff)
     {
-        Debug.Log("Buff Added: \n"+buff.ToString());
-        m_AttackRadiuos += buff.BuffIncrement.RadiuosBuff;
+        m_AttackRadius += buff.BuffIncrement.RadiuosBuff;
         m_AttackDelay += buff.BuffIncrement.AttackDelayBuff;
         m_BaseDamage += buff.BuffIncrement.DamageBuff;
-        buffs.Add(buff);
     }
 
     /// <summary>
     /// Subtract current stats according to buff values
     /// </summary>
     /// <param name="buff">Buff to remove</param>
-    public void RemoveBuff(Buff buff) //Only for logic continuity, could be removed since the data is resetted on activate
+    public void RemoveBuff(Buff buff)
     {
-        Debug.Log("Buff Removed: \n" + buff.ToString());
-        //Reset parameters
-        m_AttackRadiuos -= buff.BuffIncrement.RadiuosBuff;
-        m_AttackDelay = buff.BuffIncrement.DamageBuff;
-        m_BaseDamage = buff.BuffIncrement.DamageBuff;
-        buffs.Remove(buff);
+        m_AttackRadius -= buff.BuffIncrement.RadiuosBuff;
+        m_AttackDelay -= buff.BuffIncrement.AttackDelayBuff;
+        m_BaseDamage -= buff.BuffIncrement.DamageBuff;
     }
     #endregion
 }

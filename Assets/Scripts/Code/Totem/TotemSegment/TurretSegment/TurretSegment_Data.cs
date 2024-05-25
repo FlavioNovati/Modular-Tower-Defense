@@ -7,7 +7,6 @@ public class TurretSegment_Data : ScriptableObject
     public float AttackRadiuos = 3f;
     public float AttackDelay = 1f;
     public float BaseDamage = 1f;
-    public Projectile BaseBullet = null;
     [Header("Animation Parameters")]
     public float RotationBaseSpeed = 1f;
     public float RotationMaxAngles = 25f;
