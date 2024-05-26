@@ -8,9 +8,13 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1723552821536537821, guid: cbfacd6c571cce641aed394836b3ff54, type: 3}
+      propertyPath: m_Buff.BuffIncrement
+      value: 
+      objectReference: {fileID: 11400000, guid: 216378bc4d3178244b552e7debf8b805, type: 2}
     - target: {fileID: 1458227863078931089, guid: cbfacd6c571cce641aed394836b3ff54, type: 3}
       propertyPath: m_Name
-      value: TotemSegment_Powerups_0
+      value: TotemSegment_Buff_0
       objectReference: {fileID: 0}
     - target: {fileID: 1530531279975736158, guid: cbfacd6c571cce641aed394836b3ff54, type: 3}
       propertyPath: m_LocalPosition.x

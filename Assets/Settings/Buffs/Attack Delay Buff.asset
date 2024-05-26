@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba652bffe2e1e09449efb8219019ca27, type: 3}
-  m_Name: Rapid Turret
+  m_Script: {fileID: 11500000, guid: d8d5049b5584471429cfac80e6d395ca, type: 3}
+  m_Name: Attack Delay Buff
   m_EditorClassIdentifier: 
-  AttackRadiuos: 9
-  AttackDelay: 0.8
-  BaseDamage: 0.5
-  RotationBaseSpeed: 5
-  RotationMaxAngles: 35
+  RadiuosBuff: 0
+  AttackDelayBuff: -0.5
+  DamageBuff: 0
