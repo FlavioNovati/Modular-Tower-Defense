@@ -4493,12 +4493,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_EnemyToSpawn: {fileID: 3592934580218834829, guid: 33652bcc942ac4945a2ade15ad912be5, type: 3}
   m_TargetTransform: {fileID: 904299329}
-  m_StartingHordeSize: 1
-  m_HordeIncrement: 1
+  m_StartingHordeSize: 3
+  m_HordeIncrement: 5
   m_StartingPoolSize: 30
   m_HordeSpawnTransform: {fileID: 170706760}
   m_SpawnHordeRadius: 3.5
-  m_DelayBetweenHordes: 0
+  m_DelayBetweenHordes: 2
 --- !u!1001 &1981519592
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -78,8 +78,8 @@ public class HordeController : MonoBehaviour
                 //Set to true to avoid putting the same enmy multiple time inside the horde
                 m_EnemyList[i].gameObject.SetActive(true);
                 //stop for cycle
-                if(freeEnemies.Count == amount)
-                    return freeEnemies;
+                if (freeEnemies.Count == amount)
+                    i = m_EnemyList.Count;
             }
         }
 
@@ -91,6 +91,10 @@ public class HordeController : MonoBehaviour
             m_EnemyList[i].gameObject.SetActive(true);
             freeEnemies.Add(m_EnemyList.Last());
         }
+
+        //Deactivate all free enemies
+        for(int i = 0; i < freeEnemies.Count; i++)
+            freeEnemies[i].gameObject.SetActive(false);
 
         return freeEnemies;
     }

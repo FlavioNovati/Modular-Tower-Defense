@@ -61,8 +61,13 @@ public class Enemy : MonoBehaviour, IDamageable
     { 
         OnDeath?.Invoke();
         m_TargetTransform = null;
+        m_Agent.enabled = false;
         OnDeath -= OnDeath;
     }
 
-    private void OnEnable(){ m_Hp = m_Settings.HP; }
+    private void OnEnable()
+    {
+        m_Agent.enabled = true;
+        m_Hp = m_Settings.HP;
+    }
 }

@@ -49,7 +49,7 @@ public class Horde
     }
 
     /// <summary>
-    /// Cycles throught all enemies in the horde
+    /// Cycles throught all enemies in the horde and tick them
     /// </summary>
     public void TickHorde()
     {
